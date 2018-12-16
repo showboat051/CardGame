@@ -13,7 +13,11 @@
         this.deck_div.id = "deck_div";
         this.gameDeck = new Deck(this.deck_div, option);
         this.gameDeck.buildDeck();
-    
+
+        var shuffleBtn = document.createElement("button");
+        shuffleBtn.innerHTML = "Shuffle";
+        shuffleBtn.onclick = this.gameDeck.shuffle.bind(this);
+        this.info_div.appendChild(shuffleBtn);
         //     Discard Pile
         //     Rules
         this.el.appendChild(this.info_div);
@@ -33,13 +37,34 @@
                 card.buildCard(parentFrag);
             }
             deck_div.appendChild(parentFrag);
+            this.stack(deck_div);
         }
     }
 
     //     Cards
     //     -----
     //     shuffle
+    Deck.prototype.shuffle = function () {
+        var cardsToShuffle = this.gameDeck.deckData;
+        var m = cardsToShuffle.length, t, i;
+        while(m){
+            i = Math.floor(Math.random() * m--);
+            t = cardsToShuffle[m];
+            cardsToShuffle[m] = cardsToShuffle[i];
+            cardsToShuffle[i] = t;
+        }
+        this.gameDeck.deckData = cardsToShuffle;
+        this.gameDeck.buildDeck(this.deck_div);
+    }
     //     stack
+    Deck.prototype.stack = function(deck_div){
+        var cards = deck_div.children;
+        for (var i = cards.length - 1; i >= 0; i--){
+            cards[i].style.top = i + "px";
+            cards[i].style.left = i + "px";
+            cards[i].classList.add("stacked_card");
+        }
+    }
 
     // Card
     var Card = function(){
@@ -81,9 +106,19 @@
 
             this.cardCont.id = this.id;
             this.cardCont.appendChild(flipDiv);
+            this.cardCont.onclick = cardClick;
             parentFrag.appendChild(this.cardCont);
         }
     }
+    var cardClick = (function(e){
+        var counter = 0;
+        return function (e) {
+            e.currentTarget.classList.toggle("flip_card");
+            e.currentTarget.classList.toggle("slide_over");
+            e.currentTarget.style.zindex = counter;
+            counter++;
+        }
+    })()
     //     val
     //     suit
     //     ----
