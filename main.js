@@ -20,6 +20,17 @@
         this.info_div.appendChild(shuffleBtn);
         //     Discard Pile
         //     Rules
+        this.rules = {
+            discardRow : [
+                {
+                    name: "Got it!",
+                    droppable: true,
+                    maxcards: this.deck_div.children.length,
+                    piles: 1
+                }
+            ]
+        }
+
         this.el.appendChild(this.info_div);
         this.el.appendChild(this.deck_div);
     }
@@ -89,9 +100,23 @@
             frontValDiv.className = "front_val";
             backValDiv.className = "back_val";
             catDiv.className = "cat_val";
-
+            
+            //     val
             frontValDiv.innerHTML = this.data.q;
             backValDiv.innerHTML = this.data.a;
+            var learnMore = document.createElement("a");
+            learnMore.text = "LearnMore";
+            learnMore.href = this.data.link;
+            learnMore.target = "_blank";
+
+            var infoImage = document.createElement("img");
+            infoImage.src = "images/info.svg";
+            learnMore.appendChild(infoImage);
+            learnMore.addEventListener("click", function(e){
+                e.preventDefault();
+            })
+            backValDiv.appendChild(learnMore);
+            //     suit
             catDiv.innerHTML = this.data.category;
 
             this.cardFront.appendChild(frontValDiv);
@@ -119,8 +144,6 @@
             counter++;
         }
     })()
-    //     val
-    //     suit
     //     ----
     //     flip
 
